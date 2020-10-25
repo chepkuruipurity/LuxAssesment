@@ -1,19 +1,31 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="Quiz app">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <main>
-       <div id="quiz"></div>
-       <button id="submit">SUBMIT</button>
-       <div id="results"></div>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title></title>
+    <meta name="description" content="Quiz app" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header><h1>Quiz Game</h1></header>
+      <div class="start"><button id="start">START</button></div>
+      <section class="container">
+        <div id="quiz"></div>
+        <div id="choices"></div>
+        <footer>
+          <div class="total"></div>
+          <button id="next">NEXT</button>
+        </footer>
+      </section>
+      <div class="result">
+        <div>You've completed the quiz</div>
+        <div id="results"></div>
+        <button id="restart">RESTART</button>
+      </div>
     </main>
-        <script src="main.js" async defer></script>
-    </body>
+    <script src="main.js" async defer></script>
+  </body>
 </html>

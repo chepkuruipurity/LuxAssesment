@@ -1,75 +1,174 @@
-let quiz= document.getElementById('quiz');
-let results= document.getElementById('results');
-let submit= document.getElementById('submit');
+let quiz = document.getElementById("quiz");
+let choices = document.getElementById("choices");
+let results = document.getElementById("results");
+let result = document.querySelector(".result");
+let submit = document.getElementById("submit");
+let container = document.querySelector(".container");
+let next = document.getElementById("next");
+let start = document.querySelector(".start");
+let startBtn = document.getElementById("start");
+let total = document.querySelector(".total");
+let restart = document.getElementById("restart");
 
-let questions= [ {
+let quizNum = 1;
+let quizCount = 0;
+let score = 0;
+let questions = [
+  {
+    no: 1,
     question: "Who invented JavaScript?",
-    choices: {
-      a: "Douglas Crockford",
-      b: "Sheryl Sandberg",
-      c: "Brendan Eich"
-    },
-    answer: "c"
+    choices: [
+      "Douglas Crockford",
+      "Sheryl Sandberg",
+      "Brendan Eich",
+      "Marc Cherry",
+    ],
+    answer: "Brendan Eich",
   },
   {
+    no: 2,
     question: "Which one of these is a JavaScript package manager?",
-    choices: {
-      a: "Node.js",
-      b: "TypeScript",
-      c: "npm"
-    },
-    answer: "c"
+    choices: ["Node.js", "TypeScript", "npm", "React"],
+
+    answer: "npm",
   },
   {
+    no: 3,
     question: "Which tool can you use to ensure code quality?",
-    choices: {
-      a: "Angular",
-      b: "jQuery",
-      c: "RequireJS",
-      d: "ESLint"
-    },
-    answer: "d"
-  }
+    choices: ["Angular", "jQuery", "RequireJS", "ESLint"],
+
+    answer: "ESLint",
+  },
+  {
+    no: 4,
+    question: "What does SQL stand for?",
+
+    choices: [
+      "Stylish Question Language",
+      "Stylesheet Query Language",
+      "Statement Question Language",
+      "Structured Query Language",
+    ],
+    answer: "Structured Query Language",
+  },
+  {
+    no: 5,
+    question: "What does XML stand for?",
+
+    choices: [
+      "eXtensible Markup Language",
+      "eXecutable Multiple Language",
+      "eXTra Multi-Program Language",
+      "eXamine Multiple Language",
+    ],
+    answer: "eXtensible Markup Language",
+  },
 ];
-function showQuestions(){
-let results=[];
-for (let i=0; i<questions.length;i++){
-  let choices=[];
-  for(let choice in questions[i].choices){
-    choices.push(
-      '<label>'
-      + '<input type="radio" name="question'+i+'" value="'+choice+'">'
-					+ choice + ': '
-					+ questions[i].choices[choice]
-      + '</label>'
-
-    );
-  }
-  results.push(
-    '<div class="questions">'+ questions[i].question + '</div>'+
-    '<div class="choices" >'+ choices.join('')+ '</div>'
-  );
-}
-quiz.innerHTML= results.join('');
+startBtn.onclick = () => {
+  container.classList.add("active");
+  start.classList.add("inactive");
+  showQuestions(0);
+  quizCounter(1);
+  next.classList.add("hide");
 };
-function getResults(){
-let answers= quiz.querySelectorAll('.choices');
-console.log(answers)
-let chosenAnswer= '';
-let correctNum=0;
+next.onclick = () => {
+  if (quizCount < questions.length - 1) {
+    quizCount++;
+    quizNum++;
+    showQuestions(quizCount);
+    quizCounter(quizNum);
+    next.classList.add("hide");
+  } else {
+    showResults();
+  }
+};
+restart.onclick = () => {
+  location.reload();
+  false;
+};
+function quizCounter(index) {
+  let totalQuiz =
+    "<span>" + index + " of " + questions.length + " Questions</span>";
+  total.innerHTML = totalQuiz;
+}
+function showQuestions(index) {
+  let quizTag =
+    "<span>" +
+    questions[index].no +
+    ". " +
+    questions[index].question +
+    "</span>";
+  let options =
+    '<div class="option"><span>' +
+    questions[index].choices[0] +
+    "</span></div>" +
+    '<div class="option"><span>' +
+    questions[index].choices[1] +
+    "</span></div>" +
+    '<div class="option"><span>' +
+    questions[index].choices[2] +
+    "</span></div>" +
+    '<div class="option"><span>' +
+    questions[index].choices[3] +
+    "</span></div>";
+  quiz.innerHTML = quizTag;
+  choices.innerHTML = options;
 
-for(let i =0; i<questions.length;i++){
-  chosenAnswer= (answers[i].querySelector('input[name=question'+i+']:checked')||{}).value;
-  if(chosenAnswer === questions[i].answer){
-    correctNum++;
-    answers[i].style.color="light-green"
-  } else{
-    answers[i].style.color="red"
+  let option = choices.querySelectorAll(".option");
+  for (let i of option) {
+    i.setAttribute("onClick", "getResults(this)");
   }
 }
-results.innerHTML= correctNum + 'out of ' + questions.length;
-};
+function getResults(option) {
+  let choice = option.textContent;
+  let answer = questions[quizCount].answer;
+  let allChoices = choices.children.length;
 
-showQuestions();
+  if (choice == answer) {
+    score += 1;
+    option.classList.add("correct");
+  } else {
+    option.classList.add("incorrect");
 
-submit.addEventListener('click',getResults)
+    for (let i = 0; i < allChoices.length; i++) {
+      if (choices.children[i].textContent == answer) {
+        choices.children[i].setAttribute("class", "option correct");
+      }
+    }
+  }
+  for (let i = 0; i < allChoices; i++) {
+    choices.children[i].classList.add("disabled");
+  }
+  next.classList.add("show");
+}
+function showResults() {
+  container.classList.add("inactive");
+  result.classList.add("active");
+  if (score > 3) {
+    let scoreTag =
+      "<span>and congrats! 🎉, You got <p>" +
+      score +
+      "</p> out of <p>" +
+      questions.length +
+      "</p></span>";
+    results.innerHTML = scoreTag;
+  } else if (score > 1) {
+    
+    let scoreTag =
+      "<span>and nice 😎, You got <p>" +
+      score +
+      "</p> out of <p>" +
+      questions.length +
+      "</p></span>";
+    results.innerHTML = scoreTag;
+  } else {
+    
+    let scoreTag =
+      "<span>and sorry 😐, You got only <p>" +
+      score +
+      "</p> out of <p>" +
+      questions.length +
+      "</p></span>";
+    results.innerHTML = scoreTag;
+  }
+}
